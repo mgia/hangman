@@ -55,7 +55,7 @@ def initialize_variables():
 # Objective: Creating a dictionary with keys as length, and result an array of words.
 def read_file_to_dict(word_bank):
 	# Note: argv[0] is the name of the file, args start from 1, 2, ..
-	filename = raw_input("Input file name: ")
+	filename = input("Input file name: ")
 	# Note: To catch in the case file is typed wrongly, or does not exist
 	if not os.path.exists(filename):
 		print("Error: File incorrect, or not found, program exit")
@@ -73,7 +73,7 @@ def read_file_to_dict(word_bank):
 
 # Objective: Get a random word based on length
 def get_my_answer(answer, word_bank):
-	length_str = raw_input("Specify length: ")
+	length_str = input("Specify length: ")
 	length = int(length_str)
 	# Note: Try / except allows you to handles errors
 	try:
@@ -148,7 +148,7 @@ def play(answer, working, lives):
 		print("Number of lives left: " + str(lives))
 		print("Available:")
 		print_letters()
-		move = raw_input("Letter: ")
+		move = input("Letter: ")
 		if len(move) > 1:
 			print("Error: One letter at a time")
 		else:
