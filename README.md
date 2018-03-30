@@ -10,7 +10,5 @@ code is written in long but simpler form and commented generously to assist stud
 
 Populate the input file with words to choose from.
 Next, run this command:
-'''
 python main.py
-'''
 
