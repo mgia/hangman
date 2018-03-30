@@ -1,12 +1,12 @@
 # Hangman
-Who doesn't love Hangman? (Well, except the hanging man himself)
-
-<img src="https://raw.githubusercontent.com/mgia/hangman/master/img/state.png" width="500" height="250">
+Who doesn't love Hangman? (Well, except the hanging man himself!)
 
 ## Overview
 
 I built this project to supplement a course curriculum for HackHighSchool prepared by @KaiDrumm. For educational purposes, 
 code is written in long but simpler form and commented generously to assist students.
+
+<img src="https://raw.githubusercontent.com/mgia/hangman/master/img/state.png" width="500" height="250">
 
 The program:
 - Reads from an input file and populates its word bank as a dictionary (a.k.a. hashtable)
