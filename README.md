@@ -13,7 +13,6 @@ The program:
 - Chooses a random word, based on word length specified
 - Runs a play loop, displaying current state
 - If the player runs out of lives, game is over
-<img src="https://raw.githubusercontent.com/mgia/hangman/master/img/failure.png" width="600" height="30">
 - If all blanks are filled, player wins!
 <img src="https://raw.githubusercontent.com/mgia/hangman/master/img/success.png" width="600" height="30">
 
