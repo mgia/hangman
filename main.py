@@ -29,7 +29,6 @@ import os
 import random
 
 
-
 ############################################################################
 #                             DICTIONARIES
 ############################################################################
@@ -48,15 +47,14 @@ alpha_dict = {
 
 # Initializing all necessary variables
 def initialize_variables():
-	d = {}
+	word_bank = {}
 	answer = ""
 	working = ""
-	return d, answer, working
+	return word_bank, answer, working
 
 # Objective: Creating a dictionary with keys as length, and result an array of words.
-def read_file_to_dict(d):
+def read_file_to_dict(word_bank):
 	# Note: argv[0] is the name of the file, args start from 1, 2, ..
-
 	filename = raw_input("Input file name: ")
 	# Note: To catch in the case file is typed wrongly, or does not exist
 	if not os.path.exists(filename):
@@ -67,21 +65,20 @@ def read_file_to_dict(d):
 			words = line.split()
 			for word in words:
 				length = len(word)
-				# Note: d.keys() returns a list of all keys
-				if length not in d.keys():
-					d[length] = []
-				d[length].append(word)
-	return d
+				# Note: word_bank.keys() returns a list of all keys
+				if length not in word_bank.keys():
+					word_bank[length] = []
+				word_bank[length].append(word)
+	return word_bank
 
 # Objective: Get a random word based on length
-def get_my_answer(answer):
+def get_my_answer(answer, word_bank):
 	length_str = raw_input("Specify length: ")
 	length = int(length_str)
-
 	# Note: Try / except allows you to handles errors
 	try:
-		# Note: d[length] returns the array of words with "length" letters
-		answer = random.choice(d[length])
+		# Note: word_bank[length] returns the array of words with "length" letters
+		answer = random.choice(word_bank[length])
 	# Note: Catches for when there is no key, i.e. no words to choose)
 	except KeyError:
 		print("No words for this specified length. Program exit")
@@ -97,19 +94,28 @@ def get_working_line(working, length):
 	return (working)
 
 # Objective: Try a letter, and show if it does
-def try_move(answer, working, move):
+def try_move(answer, working, move, lives):
 	if alpha_dict[move] is 1:
-		print("Letter {} was played before. Try another letter!".format(move))
-		return working
+
+		# README KAI: This print appears above the terminal clear cmd,
+		# so it will not be seen in current state. Potential use if
+		# you want to create move history
+		print("Letter '{}' is repeated".format(move.upper()))
+
+		# Note: In case of double letter, return life to player
+		lives = lives + 1
+		return working, lives
+	# Note: .split(" ") cuts the string by the spaces to create elements
 	working = working.split(" ")
 	# Note: enumerate() creates a tuple of (index, char)
 	for char in enumerate(answer):
 		if char[1] is move:
 			working[char[0]] = char[1]
-			alpha_dict[char[1]] = 1
+	# Note: Set the letter to 'Not Available'
+	alpha_dict[move] = 1
+	# Note: Create the new current state with the letter filled in.
 	working = " ".join(working)
-	print(working)
-	return working
+	return working, lives
 
 # Objective: Check for proper exit condition
 def exit_success(working):
@@ -123,20 +129,23 @@ def print_letters():
 	print("--------------------------")
 	for letter in alpha_dict:
 		if alpha_dict[letter] is 0:
-			sys.stdout.write(letter.upper() + ' ')
+			sys.stdout.write(letter.upper() + " ")
 	sys.stdout.write('\n')
 	print("--------------------------")
 
 # Objective: Main while loop to play each turn
-def play(answer, working):
+def play(answer, working, lives):
 	while not exit_success(working):
-
-		# Fake refresh lmao
-		# clear = '\n' * 100
-		# print(clear)
-		# My bad kai
-
+		# Note: Catches case for no more lives
+		if lives is 0:
+			print("Failure! Poor man... RIP")
+			print("Answer: " + answer)
+			sys.exit()
+		# Note: 'Refreshes' terminal for a clean state output
+		sys.stdout.write("\033[H\033[2J")
+		# Note: Potential for UI Visualizer
 		print("Current state: {}".format(working))
+		print("Number of lives left: " + str(lives))
 		print("Available:")
 		print_letters()
 		move = raw_input("Letter: ")
@@ -144,26 +153,32 @@ def play(answer, working):
 			print("Error: One letter at a time")
 		else:
 			try:
-				print(answer, working, move)
-				working = try_move(working, answer, move)
-				print(answer, working, move)
+				working, lives = try_move(answer, working, move, lives)
+				lives = lives - 1
 			except KeyError:
 				print("Error: invalid letter")
 	print("Success! You saved the man. Good job!")
+	print("Answer: " + answer)
+
 ############################################################################
 #                             COMMANDS
 ############################################################################
 
-# d, answer, working = initialize_variables()
-# d = read_file_to_dict(d)
-# answer, word_length = get_my_answer(answer)
-# working = get_working_line(working, word_length)
+# Initialize your variables
+word_bank, answer, working = initialize_variables()
 
-# Testing
-# print("\n\n\nDictionary: ")
-# print(d)
-# print("Answer: " + answer)
-# print("Working: " + working + "\n\n\n")
-play("hello", "_ _ _ _ _")
-try_move("hello", "_ _ _ _ _", 'a')
-# print(exit_success("a a a _"))
+# Using a file as input, create a dictionary with (len, array of words)
+word_bank = read_file_to_dict(word_bank)
+
+# Choose a word based on word length
+answer, word_length = get_my_answer(answer, word_bank)
+
+# Using the same word length, create the corresponding working state
+# i.e. "pie" become "_ _ _"
+working = get_working_line(working, word_length)
+
+# Number of lives
+lives = 10
+
+# Game loop
+play(answer, working, lives)
